@@ -1,0 +1,23 @@
+<h1> List of all </h1>
+<table class="table table-dark">
+  <thead>
+    <tr>
+    <th scope="col">Title</th>
+    <th scope="col">Text</th>
+    <th scope="col">Category</th>
+    <tr>
+  </thead>
+  <tbody>
+<% @publicacions.each do |publicacion| %>
+<tr>
+    <td><%= publicacion.title %></td>
+    <td><%= publicacion.text %></td>
+  <td><%= publicacion.category %></td>
+</tr>
+<% end %>
+</tbody>
+</table>
+
+<div id='will_paginate_id' style="position:absolute; left:35%; top: 70%">
+  <%= will_paginate @publicacions %>
+</div>

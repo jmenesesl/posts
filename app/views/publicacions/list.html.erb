@@ -1,0 +1,120 @@
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<h1>Animals  &nbsp&nbsp&nbsp <%= I18n.locale %></h1>
+<%= link_to 'tabla en español', {:action => 'list', :params => {:lang => :es}} %> &nbsp
+<%= link_to 'tabla en Catalan', {:action => 'list', :params => {:lang => :ca}} %>  &nbsp
+<%= link_to 'tabla en ingles', {:action => 'list', :params => {:lang => :en}} %>
+<br>
+<br>
+
+<table class="table table-dark">
+  <thead>
+    <tr>
+    <th scope="col">Title</th>
+    <th scope="col">Text</th>
+    <th scope="col">Category</th>
+    <tr>
+  </thead>
+  <tbody>
+<% @publicacions.each do |publicacion| %>
+<tr>
+  <!-- Si el titulo de la publicación no existe -->
+  <%if publicacion.title == nil %>
+  <!-- Se usa el de la locale default En mi caso ENGLISH -->
+    <% I18n.with_locale(I18n.default_locale) {@title = Publicacion.find(publicacion.id).title} %>
+    <% if @title == nil %>
+      <!-- Si no se encuentra el valor del titulo en la default, se recorre en busqueda de algun valor existente
+      entre todas las locales -->
+      <% I18n.available_locales.each do |locale| %>
+           <% I18n.with_locale(locale) {@title = Publicacion.find(publicacion.id).title} %>
+           <% if @title != nil %>
+                <td><%= @title %></td>
+                <%break%>
+           <%end %>
+         <%end%>
+         <% if @title == nil %>
+         <td>---</td>
+         <% end %>
+      <% else %>
+        <td><%= @title %></td>
+      <%end%>
+  <% else %>
+    <td><%= publicacion.title %></td>
+  <% end %>
+
+    <%if publicacion.text == nil %>
+      <% I18n.with_locale(I18n.default_locale) {@text = Publicacion.find(publicacion.id).text} %>
+      <% if @text == nil %>
+        <% I18n.available_locales.each do |locale| %>
+             <% I18n.with_locale(locale) {@text = Publicacion.find(publicacion.id).text} %>
+             <% if @text != nil %>
+                  <td><%= @text %></td>
+                  <%break%>
+             <%end %>
+           <%end%>
+           <% if @text == nil %>
+           <td>---</td>
+           <% end %>
+        <% else %>
+          <td><%= @text %></td>
+        <%end%>
+    <% else %>
+      <td><%= publicacion.text %></td>
+    <% end %>
+  <td><%= publicacion.category %></td>
+</tr>
+<% end %>
+</tbody>
+</table>
+<div id='will_paginate_id' style="position:absolute; left:40%" >
+  <%= will_paginate @publicacions, :params => {:lang => I18n.locale} %>
+</div>
+
+
+<br>
+
+<h1>Añadir Publicación</h1>
+<br>
+<%= form_tag :action => 'edit' do %>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-4">
+      <h2>Castellano</h2>
+      <p><label for = "title_esp">titulo </label>:
+      <%= text_field 'title_esp', 'title_esp',  placeholder:"Titulo" %></p>
+      <p><label for = "text_esp">texto </label>:
+        <%= text_field 'text_esp', 'text_esp',  placeholder:"Texto" %></p>
+    </div>
+    <div class="col-sm-4">
+      <h2>Catala</h2>
+      <p><label for = "title_cat">titol </label>:
+      <%= text_field 'title_cat', 'title_cat',  placeholder:"Titol" %></p>
+      <p><label for = "text_cat">text </label>:
+        <%= text_field 'text_cat', 'text_cat',  placeholder:"Text" %></p>
+    </div>
+    <div class="col-sm-4">
+      <h2>English</h2>
+      <p><label for = "title_eng">title </label>:
+      <%= text_field 'title_eng', 'title_eng',  placeholder:"title" %></p>
+      <p><label for = "text_eng">text </label>:
+        <%= text_field 'text_eng', 'text_eng',  placeholder:"text" %></p>
+    </div>
+  </div>
+  <div class="row">
+    <div>
+      <p><label for = "category_esp">Categoria </label>:
+        <%= text_field 'category_esp', 'category_esp',  placeholder:"Categoria" %></p>
+    </div>
+    <div class="col align-self-center">
+    <%= submit_tag "Editar publicacion", :class => "btn btn-success" %>
+    <% end-%>
+  </div>
+  </div>
+</div>
